@@ -1,0 +1,91 @@
+#include <iostream>
+#include<iostream>
+#include<queue>
+#include<string.h>
+#include<string>
+using namespace std;
+ 
+int prime[10005];
+int vis[10000];
+bool Isprime[10005];
+int cnt=1;
+ 
+typedef struct{
+   string s;
+   int step;
+}num;
+//prime _ sieving 线性筛法素数  
+void prime_excel(){
+    Isprime[0]=Isprime[1]=1;
+    for(int i=2;i<=10000;i++)
+         Isprime[i]=1;
+ 
+    for(int i=2;i<=10000;i++){
+        if(Isprime[i])
+             prime[cnt++]=i;
+        for(int j=1;j<cnt&&prime[j]*i<=10000;j++){
+               Isprime[prime[j]*i]=0;
+               if(i%prime[j]==0)
+                   break;
+        }
+    }
+ 
+}
+ 
+int s_int(string s){
+   int ret=0;
+   for(int i=0;i<4;i++){
+       ret*=10;
+       ret+=(s[i]-'0');
+   }
+   return ret;
+}
+ 
+ 
+int bfs(string a,string b){
+   queue<num>q;
+   num start;
+   start.s=a;
+   start.step=0;
+   q.push(start);
+   while(!q.empty()){
+      num temp=q.front();
+      q.pop();
+ 
+      if(b.compare(temp.s)==0)
+          return  temp.step;
+ 
+      for(int i=0;i<4;i++){
+          for(int j=0;j<10;j++){
+                 if(i==0&&j==0)
+                     continue;
+                 num t=temp;
+                 t.step++;
+                 t.s[i]=j+'0';
+ 
+                 int cmp=s_int(t.s);
+ 
+                 if(!vis[cmp]&&Isprime[cmp]==1){
+                      vis[cmp]=1;
+                      q.push(t);
+                 }
+          }
+      }
+   }
+}
+ 
+ 
+int main()
+{
+    prime_excel();
+    int T;
+    cin>>T;
+    while(T--){
+        memset(vis,0,sizeof(vis));
+        string a,b;
+        cin>>a>>b;
+        int ans=bfs(a,b);
+        cout<<ans<<endl;
+    }
+    return 0;
+}
