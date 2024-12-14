@@ -1,0 +1,50 @@
+import java.util.*;
+public class Main {
+  static ArrayList<String> edges=new ArrayList<String>();
+  static List<Integer> []G=new List[26];
+
+  public static boolean BFS(int ind) {
+    int cutA=edges.get(ind).charAt(0)-'A';
+    int cutB=edges.get(ind).charAt(1)-'A';
+    boolean []V=new boolean[26];
+    Queue <Integer> Q=new LinkedList<Integer> ();
+    Q.add(0);
+    V[0]=true;
+    while(!Q.isEmpty()) {
+      int sz=Q.size();
+      for(int i=0;i<sz;i++) {
+        int cNode=Q.remove();
+        if(cNode==1) return false;
+        for(int j=0;j<G[cNode].size();j++) {
+          int newNode=G[cNode].get(j);
+          if((cNode==cutA && newNode==cutB)|| (cNode==cutB && newNode==cutA)) continue;
+          if(!V[newNode]) {
+            V[newNode]=true;
+            Q.add(newNode);
+          }
+        }
+      }
+    }
+    return true;
+  }
+  public static void main(String[] args) {
+    Scanner in=new Scanner(System.in);
+    for(int i=0;i<26;i++)
+      G[i]=new ArrayList<Integer>();
+    while(true) {
+      String tmp=in.next();
+      if(tmp.equals("**")) break;
+      edges.add(tmp);//BD
+      G[tmp.charAt(0)-'A'].add(tmp.charAt(1)-'A');
+      G[tmp.charAt(1)-'A'].add(tmp.charAt(0)-'A');
+    }
+    int cnt=0;
+    for(int i=0;i<edges.size();i++) {
+      if(BFS(i)) {
+        System.out.println(edges.get(i));
+        cnt++;
+      }
+    }
+    System.out.println("There are "+cnt+" disconnecting roads.");
+  }
+}
